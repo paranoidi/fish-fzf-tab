@@ -62,6 +62,7 @@ fish -c "
                 --height=~40% \
                 --layout=reverse \
                 --ansi \
+                --bind=tab:accept \
                 --preview "$preview" \
                 --preview-window=down:50%:wrap \
                 --prompt="file> " \
@@ -83,6 +84,7 @@ fish -c "
             --height=~40% \
             --layout=reverse \
             --ansi \
+            --bind=tab:accept \
             --preview "$preview" \
             --preview-window=down:50%:wrap \
             --prompt="complete> " \
