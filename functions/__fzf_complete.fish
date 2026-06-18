@@ -64,7 +64,7 @@ fish -c "
                 --height=~40% \
                 --layout=reverse \
                 --ansi \
-                --bind=tab:accept \
+                --bind=tab:down \
                 --bind=ctrl-j:preview-down \
                 --bind=ctrl-k:preview-up \
                 --preview "$preview" \
@@ -94,7 +94,7 @@ fish -c "
             --height=~40% \
             --layout=reverse \
             --ansi \
-            --bind=tab:accept \
+            --bind=tab:down \
             --bind=ctrl-j:preview-down \
             --bind=ctrl-k:preview-up \
             --preview "$preview" \
