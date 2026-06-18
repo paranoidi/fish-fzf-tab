@@ -40,18 +40,20 @@ git clone https://github.com/paranoidi/fish-fzf-tab ~/.config/fish/fish-fzf-tab
 set -U fish_function_path $fish_function_path ~/.config/fish/fish-fzf-tab/functions
 ```
 
-## Enable
+## Usage
 
-Add this to your **config.fish** to bind Tab → fzf completion:
+Tab now opens the fzf completion window automatically. Just install and go.
 
-```fish
-bind \t '__fzf_complete'
-```
-
-If you ever want to temporarily disable the binding without removing the plugin:
+To temporarily disable the binding without removing the plugin:
 
 ```fish
 set -g fish_fzf_tab_disabled 1
+```
+
+To re-enable:
+
+```fish
+set -e fish_fzf_tab_disabled
 ```
 
 ## Customisation

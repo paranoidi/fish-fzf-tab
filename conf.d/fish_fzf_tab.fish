@@ -3,31 +3,25 @@
 # Install via fisher:
 #   fisher install paranoidi/fish-fzf-tab
 #
-# Manual install:
-#   set -U fish_function_path $fish_function_path ~/.config/fish/functions
-#   cp functions/__fzf_complete.fish ~/.config/fish/functions/
-#
-# The key binding is NOT enabled by default to avoid overriding
-# fish's built-in pager. Uncomment the line below in your
-# config.fish to activate:
-#
-#   bind \t '__fzf_complete'
-#
-# To disable the binding at any point (without removing the plugin):
+# To disable without removing:
 #   set -g fish_fzf_tab_disabled 1
 #
-# You can pass extra flags to fzf via $fzf_complete_opts, e.g.:
+# Extra fzf flags via $fzf_complete_opts:
 #   set -g fzf_complete_opts --multi --bind=ctrl-a:toggle-all
 
-# Check for fzf dependency on first load
+# Dependency check
 if not command -q fzf
-    echo >&2 "fish-fzf-tab: fzf not found. Install fzf first: https://github.com/junegunn/fzf"
+    echo >&2 "fish-fzf-tab: fzf not found — install from https://github.com/junegunn/fzf"
 end
 
-# Auto-bind if user opted in via universal variable
+# --- Key bindings (interactive shells only) ---
+
 if status is-interactive
-    and not set -q fish_fzf_tab_disabled
-    and not bind \t 2>/dev/null | grep -q '__fzf_complete'
-    # Only auto-bind if the user explicitly requested it — keep this commented out
-    # bind \t '__fzf_complete'
+    # Respect opt-out
+    if set -q fish_fzf_tab_disabled
+        exit 0
+    end
+
+    # Bind Tab to fzf completion (won't double-bind on re-source)
+    bind \t '__fzf_complete'
 end
