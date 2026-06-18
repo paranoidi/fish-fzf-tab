@@ -74,6 +74,12 @@ fish -c "
         end
         commandline -f repaint
         return 0
+    else if test (count $comp_list) -eq 1
+        # Only one completion — apply it directly, skip fzf
+        set -l completion (string split \t -- "$comp_list[1]")[1]
+        commandline -t -- "$completion"
+        commandline -f repaint
+        return 0
     end
 
     # Pipe completions through fzf
