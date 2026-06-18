@@ -36,6 +36,8 @@ function __fzf_complete -d "Interactively select shell completions via fzf with 
     set -l preview '
 fish -c "
     set f {}
+    set f (string split -- \t \$f)[1]
+    set f (string replace -r '^~' \$HOME -- \$f)
     if test -d \$f
         '"$dir_cmd"' \$f
     else if test -f \$f
@@ -63,8 +65,10 @@ fish -c "
                 --layout=reverse \
                 --ansi \
                 --bind=tab:accept \
+                --bind=ctrl-j:preview-down \
+                --bind=ctrl-k:preview-up \
                 --preview "$preview" \
-                --preview-window=down:50%:wrap \
+                --preview-window=right:50%:wrap \
                 --prompt="file> " \
                 $fzf_complete_opts
         )
@@ -91,8 +95,10 @@ fish -c "
             --layout=reverse \
             --ansi \
             --bind=tab:accept \
+            --bind=ctrl-j:preview-down \
+            --bind=ctrl-k:preview-up \
             --preview "$preview" \
-            --preview-window=down:50%:wrap \
+            --preview-window=right:50%:wrap \
             --prompt="complete> " \
             $fzf_complete_opts
     )
