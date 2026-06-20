@@ -98,9 +98,16 @@ fish -c "
         end
     end
 
-    # Pipe completions through fzf
+    # Pipe completions through fzf with aligned columns
     set -l selected (
         printf "%s\n" $comp_list |
+        awk -F'\t' '
+            { lines[NR]=$0; f1[NR]=$1; f2[NR]=$2; if(length($1)>max) max=length($1) }
+            END { for(i=1;i<=NR;i++) {
+                if(f2[i]!="") printf "%-*s\t%s\n", max+2, f1[i], f2[i]
+                else printf "%s\n", f1[i]
+            }}
+        ' |
         fzf \
             --query="$token" \
             --height=~40% \
@@ -115,8 +122,9 @@ fish -c "
             $fzf_complete_opts
     )
 
-    # Extract the actual completion value (strip description after tab)
+    # Extract the actual completion value (strip description after tab, then strip padding)
     set -l completion (string split \t -- "$selected")[1]
+    set -l completion (string trim -r -- "$completion")
 
     if test -n "$completion"
         commandline -t -- "$completion"
