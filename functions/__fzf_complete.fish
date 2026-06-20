@@ -84,6 +84,18 @@ fish -c "
         commandline -t -- "$completion"
         commandline -f repaint
         return 0
+    else
+        # Multiple completions — skip fzf if exactly one is a file (non-directory)
+        set -l file_vals
+        for c in $comp_list
+            set -l val (string split \t -- "$c")[1]
+            string match -q '*/' -- "$val"; or set -a file_vals "$val"
+        end
+        if test (count $file_vals) -eq 1
+            commandline -t -- "$file_vals[1]"
+            commandline -f repaint
+            return 0
+        end
     end
 
     # Pipe completions through fzf
