@@ -68,7 +68,7 @@ fish -c "
                 --bind=ctrl-j:preview-down \
                 --bind=ctrl-k:preview-up \
                 --preview "$preview" \
-                --preview-window=right:50%:wrap \
+                --preview-window=right:60%:wrap \
                 --prompt="file> " \
                 $fzf_complete_opts
         )
@@ -110,7 +110,7 @@ fish -c "
             --bind=ctrl-j:preview-down \
             --bind=ctrl-k:preview-up \
             --preview "$preview" \
-            --preview-window=right:50%:wrap \
+            --preview-window=right:60%:wrap \
             --prompt="complete> " \
             $fzf_complete_opts
     )
