@@ -13,44 +13,8 @@ function __fzf_complete -d "Interactively select shell completions via fzf with 
     # Trim buffer up to cursor position
     set -l trimmed (string sub -s 1 -l $cursor -- "$buffer")
 
-    # --- preview commands ---
-    # directory lister
-    set -l dir_cmd (
-        if type -q eza
-            echo "eza -lah --git --icons --color=always"
-        else
-            echo "ls -lah"
-        end
-    )
-
-    # file viewer
-    set -l file_cmd (
-        if type -q bat
-            echo "bat --style=numbers --color=always --paging=never --wrap=never"
-        else
-            echo "cat"
-        end
-    )
-
-    # Build preview script (single-quote-safe via fish -c with escaped vars)
-    set -l preview '
-fish -c "
-    set f {}
-    set f (string split -- \t \$f)[1]
-    set f (string replace -r '^~' \$HOME -- \$f)
-    if test -d \$f
-        '"$dir_cmd"' \$f
-    else if test -f \$f
-        '"$file_cmd"' \$f
-    else if command -q \$f
-        whatis \$f 2>/dev/null
-    else if test -e \$f
-        '"$dir_cmd"' \$f
-    else
-        echo \$f
-    end
-"
-'
+    # Preview: pass selected item as argv to avoid word-splitting on spaces
+    set -l preview 'fish -c '"'"'__fzf_complete_preview $argv[1]'"'"' -- "{}"'
 
     # Gather completions from fish's own completion system
     set -l comp_list (complete --do-complete "$trimmed" 2>/dev/null)
@@ -74,14 +38,14 @@ fish -c "
         )
 
         if test -n "$selected"
-            commandline -t -- "$selected"
+            commandline -t -- (string replace -a "'" "\\'" -- (string replace -a ' ' '\ ' -- "$selected"))
         end
         commandline -f repaint
         return 0
     else if test (count $comp_list) -eq 1
         # Only one completion — apply it directly, skip fzf
         set -l completion (string split \t -- "$comp_list[1]")[1]
-        commandline -t -- "$completion"
+        commandline -t -- (string replace -a "'" "\\'" -- (string replace -a ' ' '\ ' -- "$completion"))
         commandline -f repaint
         return 0
     else
@@ -92,7 +56,7 @@ fish -c "
             string match -q '*/' -- "$val"; or set -a file_vals "$val"
         end
         if test (count $file_vals) -eq 1
-            commandline -t -- "$file_vals[1]"
+            commandline -t -- (string replace -a "'" "\\'" -- (string replace -a ' ' '\ ' -- "$file_vals[1]"))
             commandline -f repaint
             return 0
         end
@@ -127,7 +91,7 @@ fish -c "
     set -l completion (string trim -r -- "$completion")
 
     if test -n "$completion"
-        commandline -t -- "$completion"
+        commandline -t -- (string replace -a "'" "\\'" -- (string replace -a ' ' '\ ' -- "$completion"))
     end
 
     commandline -f repaint
