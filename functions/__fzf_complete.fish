@@ -20,28 +20,9 @@ function __fzf_complete -d "Interactively select shell completions via fzf with 
     set -l comp_list (complete --do-complete "$trimmed" 2>/dev/null)
 
     if test -z "$comp_list"
-        # No completions available — fall back to fzf over files/dirs directly
-        set -l selected (
-            fd --type f --type d --hidden --follow --exclude '.git' . 2>/dev/null |
-            fzf \
-                --query="$token" \
-                --height=~40% \
-                --layout=reverse \
-                --ansi \
-                --bind=tab:down \
-                --bind=ctrl-j:preview-down \
-                --bind=ctrl-k:preview-up \
-                --preview "$preview" \
-                --preview-window=right:60%:wrap \
-                --prompt="file> " \
-                $fzf_complete_opts
-        )
-
-        if test -n "$selected"
-            commandline -t -- (string replace -a "'" "\\'" -- (string replace -a ' ' '\ ' -- "$selected"))
-        end
+        # No completions — nothing to do
         commandline -f repaint
-        return 0
+        return 1
     else if test (count $comp_list) -eq 1
         # Only one completion — apply it directly, skip fzf
         set -l completion (string split \t -- "$comp_list[1]")[1]
